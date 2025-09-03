@@ -1,0 +1,18 @@
+.main {
+    flex: 1;
+}
+
+.container {
+    width: 90%;
+    max-width: 880px;
+    margin: 0px auto;
+    padding: 0 16px 16px;
+}
+
+.title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 48px;
+    text-align: center;
+}
