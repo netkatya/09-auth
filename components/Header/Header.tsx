@@ -2,8 +2,9 @@ import css from "./Header.module.css";
 
 import Link from "next/link";
 
-import { getTags } from "@/lib/api";
 import TagsMenu from "../TagsMenu/TagsMenu";
+import AuthNavigation from "../AuthNavigation/AuthNavigation";
+import { getTags } from "@/lib/api/api";
 
 const Header = async () => {
   const tags = await getTags();
@@ -21,6 +22,7 @@ const Header = async () => {
           <li>
             <TagsMenu tags={tags} />
           </li>
+          <AuthNavigation />
         </ul>
       </nav>
     </header>

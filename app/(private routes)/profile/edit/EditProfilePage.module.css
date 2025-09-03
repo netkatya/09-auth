@@ -1,0 +1,112 @@
+.mainContent {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+}
+
+.profileCard {
+    max-width: 500px;
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    text-align: left;
+}
+
+.formTitle {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.avatar {
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 24px auto;
+}
+
+.profileInfo {
+    font-size: 18px;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.usernameWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.usernameWrapper label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #222;
+}
+
+.input {
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    outline-offset: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.input:focus {
+    border-color: #0d6efd;
+    outline: none;
+}
+
+.profileInfo p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.saveButton {
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 600;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: stretch;
+    text-align: center;
+}
+
+.saveButton:hover {
+    background-color: #0b5ed7;
+}
+
+.cancelButton {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: transparent;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cancelButton:hover {
+    background-color: #6c757d;
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}

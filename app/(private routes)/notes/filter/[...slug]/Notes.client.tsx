@@ -7,9 +7,10 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
 import Loader from "@/app/loading";
-import { fetchNotes, FetchNotesResponse } from "@/lib/api";
+
 import css from "./Notes.page.module.css";
 import Link from "next/link";
+import { fetchNotes, FetchNotesResponse } from "@/lib/api/api";
 
 interface NotesClientProps {
   tag?: string;
