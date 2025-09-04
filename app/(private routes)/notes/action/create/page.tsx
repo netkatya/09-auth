@@ -1,5 +1,5 @@
 import css from "./createNote.module.css";
-import { getTags } from "@/lib/api";
+
 import {
   dehydrate,
   HydrationBoundary,
@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { Metadata } from "next";
 import CreateNoteClient from "./createNote.client";
+import { getTags } from "@/lib/api/serverApi";
 
 export const metadata: Metadata = {
   title: "Create note",

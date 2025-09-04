@@ -8,6 +8,9 @@ import { Roboto } from "next/font/google";
 export const metadata: Metadata = {
   title: "Note Hub",
   description: "App for making and updating notes",
+  icons: {
+    icon: "/favicon.ico",
+  },
   openGraph: {
     title: "Note Hub",
     description: "App for making and updating notes",

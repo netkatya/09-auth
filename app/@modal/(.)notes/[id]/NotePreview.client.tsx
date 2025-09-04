@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import css from "./NotePreview.module.css";
 import { useQuery } from "@tanstack/react-query";
-import { fetchNoteById } from "@/lib/api";
+
 import Loader from "@/app/loading";
+import { fetchNoteById } from "@/lib/api/clientApi";
 
 type NotePreviewProps = {
   id: string;

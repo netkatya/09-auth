@@ -10,7 +10,7 @@ import Loader from "@/app/loading";
 
 import css from "./Notes.page.module.css";
 import Link from "next/link";
-import { fetchNotes, FetchNotesResponse } from "@/lib/api/api";
+import { fetchNotesClient, FetchNotesResponse } from "@/lib/api/clientApi";
 
 interface NotesClientProps {
   tag?: string;
@@ -23,7 +23,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
 
   const { data, isFetching, isError, error } = useQuery<FetchNotesResponse>({
     queryKey: ["notes", debouncedSearch, page, tag],
-    queryFn: () => fetchNotes(debouncedSearch, page, 9, tag),
+    queryFn: () => fetchNotesClient(debouncedSearch, page, 9, tag),
     placeholderData: (prev) => prev,
   });
 

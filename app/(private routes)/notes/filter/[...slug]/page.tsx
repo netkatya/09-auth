@@ -6,7 +6,7 @@ import {
 import NotesClient from "./Notes.client";
 
 import { Metadata } from "next";
-import { fetchNotes } from "@/lib/api/api";
+import { fetchNotes } from "@/lib/api/serverApi";
 
 type Props = {
   params: Promise<{ slug?: string[] }>;

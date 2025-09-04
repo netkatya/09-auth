@@ -1,6 +1,6 @@
 import Link from "next/link";
 import css from "./SidebarNotes.module.css";
-import { getTags } from "@/lib/api/api";
+import { getTags } from "@/lib/api/serverApi";
 
 export default async function SidebarNotes() {
   const tags = await getTags();
