@@ -4,17 +4,16 @@ import { RegisterRequest, LoginRequest } from "@/types/auth";
 import { cookies } from "next/headers";
 import { nextServer } from "./api";
 
+const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
+
 export async function getAuthHeaders(): Promise<{
-  headers: {
-    Cookie: string;
-  };
+  headers: { Cookie: string };
 }> {
   const cookieStore = await cookies();
   const cookieString = cookieStore
     .getAll()
     .map((c) => `${c.name}=${c.value}`)
     .join("; ");
-
   return { headers: { Cookie: cookieString } };
 }
 
@@ -41,9 +40,9 @@ export async function loginServer(data: LoginRequest): Promise<User> {
 export async function fetchNotes(
   search = "",
   page = 1,
-  perPage = 9,
+  perPage = 12,
   tag?: string
-) {
+): Promise<{ notes: Note[]; totalPages: number }> {
   const params: Record<string, string> = {
     page: String(page),
     perPage: String(perPage),
@@ -51,29 +50,40 @@ export async function fetchNotes(
   if (search) params.search = search;
   if (tag && tag.toLowerCase() !== "all") params.tag = tag;
 
-  const headers = await getAuthHeaders();
-  const { data } = await nextServer.get<{ notes: Note[]; totalPages: number }>(
-    "/notes",
-    {
-      params,
-      ...headers,
-    }
-  );
-  return data;
+  const res = await fetch(`/api/notes?${new URLSearchParams(params)}`, {
+    method: "GET",
+    headers: {
+      cookie: (await cookies())
+        .getAll()
+        .map((c) => `${c.name}=${c.value}`)
+        .join("; "),
+    },
+  });
+
+  if (!res.ok) throw new Error(`Fetch error ${res.status}`);
+  return (await res.json()) as { notes: Note[]; totalPages: number };
 }
 
-export async function deleteNote(id: string): Promise<Note> {
-  const headers = await getAuthHeaders();
-  const { data } = await nextServer.delete<Note>(`/notes/${id}`, headers);
-  return data;
+export async function deleteNote(id: string): Promise<Note | null> {
+  try {
+    const headers = await getAuthHeaders();
+    const { data } = await nextServer.delete<Note>(`/notes/${id}`, headers);
+    return data;
+  } catch (err) {
+    console.error("deleteNote error:", err);
+    return null;
+  }
 }
-
-const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
 
 export async function getTags(): Promise<string[]> {
-  const { notes } = await fetchNotes("");
-  const tagsFromNotes: string[] = Array.from(
-    new Set(notes.map((note) => note.tag as string))
-  );
-  return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
+  try {
+    const res = await fetchNotes();
+    const tagsFromNotes: string[] = Array.from(
+      new Set(res.notes.map((note) => note.tag))
+    );
+    return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
+  } catch (err) {
+    console.error("getTags error:", err);
+    return DEFAULT_TAGS;
+  }
 }

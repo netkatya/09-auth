@@ -10,34 +10,66 @@ export interface FetchNotesResponse {
   totalPages: number;
 }
 
+const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
+
 export async function registerClient(data: RegisterRequest): Promise<User> {
-  const { data: res } = await nextServer.post<User>("/auth/register", data);
-  return res;
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || `Registration failed: ${res.status}`);
+  }
+
+  return await res.json();
 }
 
 export async function loginClient(data: LoginRequest): Promise<User> {
-  const { data: res } = await nextServer.post<User>("/auth/login", data);
-  return res;
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || `Login failed: ${res.status}`);
+  }
+
+  return await res.json();
 }
 
 export async function fetchNotesClient(
   search = "",
   page = 1,
-  perPage = 9,
+  perPage = 12,
   tag?: string
-) {
-  const params: Record<string, string> = {
-    page: String(page),
-    perPage: String(perPage),
-  };
-  if (search) params.search = search;
-  if (tag && tag.toLowerCase() !== "all") params.tag = tag;
+): Promise<FetchNotesResponse> {
+  try {
+    const params: Record<string, string> = {
+      page: String(page),
+      perPage: String(perPage),
+    };
+    if (search) params.search = search;
+    if (tag && tag.toLowerCase() !== "all") params.tag = tag;
 
-  const { data } = await nextServer.get<{ notes: Note[]; totalPages: number }>(
-    "/notes",
-    { params }
-  );
-  return data;
+    const res = await fetch(`/api/notes?${new URLSearchParams(params)}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!res.ok) throw new Error(`Error: ${res.status}`);
+
+    return (await res.json()) as FetchNotesResponse;
+  } catch (err) {
+    console.error("fetchNotesClient error:", err);
+    return { notes: [], totalPages: 0 };
+  }
 }
 
 export async function fetchNoteById(id: string): Promise<Note> {
@@ -59,16 +91,41 @@ export async function deleteNoteClient(id: string): Promise<Note> {
   return data;
 }
 
-const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
 export async function getTagsClient(): Promise<string[]> {
   try {
-    const { notes } = await fetchNotesClient("");
+    const res = await fetchNotesClient();
     const tagsFromNotes: string[] = Array.from(
-      new Set(notes.map((note) => note.tag))
+      new Set(res.notes.map((note) => note.tag))
     );
     return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
   } catch (err) {
     console.error("Cannot fetch tags:", err);
     return DEFAULT_TAGS;
+  }
+}
+
+export async function getUserProfile(): Promise<User> {
+  try {
+    const { data } = await nextServer.get<User>("/users/me", {
+      withCredentials: true,
+    });
+    return data;
+  } catch (err) {
+    console.error("getUserProfile error:", err);
+    throw err;
+  }
+}
+
+export async function updateUser(
+  update: Partial<{ userName: string }>
+): Promise<User> {
+  try {
+    const { data } = await nextServer.patch<User>("/users/me", update, {
+      withCredentials: true,
+    });
+    return data;
+  } catch (err) {
+    console.error("updateUser error:", err);
+    throw err;
   }
 }

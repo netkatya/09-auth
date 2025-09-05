@@ -3,9 +3,11 @@
 import css from "./SignInPage.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ApiError } from "@/app/api/api";
 import { LoginRequest } from "@/types/auth";
 import { loginClient } from "@/lib/api/clientApi";
+import { AxiosError } from "axios";
+
+type ApiError = AxiosError<{ error: string }>;
 
 export default function SignIn() {
   const router = useRouter();

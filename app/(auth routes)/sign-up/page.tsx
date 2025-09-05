@@ -3,11 +3,13 @@
 import { useRouter } from "next/navigation";
 import css from "./SignUpPage.module.css";
 import { useState } from "react";
-
 import { RegisterRequest } from "@/types/auth";
 import { registerClient } from "@/lib/api/clientApi";
+import { AxiosError } from "axios";
 
-export default function SingUpPage() {
+type ApiError = AxiosError<{ error: string }>;
+
+export default function SignUpPage() {
   const router = useRouter();
   const [error, setError] = useState("");
 
