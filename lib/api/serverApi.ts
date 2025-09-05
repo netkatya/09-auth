@@ -2,7 +2,7 @@ import { User } from "@/types/user";
 import { Note } from "@/types/note";
 import { RegisterRequest, LoginRequest } from "@/types/auth";
 import { cookies } from "next/headers";
-import { api } from "@/app/api/api";
+import { nextServer } from "./api";
 
 export async function getAuthHeaders(): Promise<{
   headers: {
@@ -20,13 +20,21 @@ export async function getAuthHeaders(): Promise<{
 
 export async function registerServer(data: RegisterRequest): Promise<User> {
   const headers = await getAuthHeaders();
-  const { data: res } = await api.post<User>("/auth/register", data, headers);
+  const { data: res } = await nextServer.post<User>(
+    "/auth/register",
+    data,
+    headers
+  );
   return res;
 }
 
 export async function loginServer(data: LoginRequest): Promise<User> {
   const headers = await getAuthHeaders();
-  const { data: res } = await api.post<User>("/auth/login", data, headers);
+  const { data: res } = await nextServer.post<User>(
+    "/auth/login",
+    data,
+    headers
+  );
   return res;
 }
 
@@ -44,7 +52,7 @@ export async function fetchNotes(
   if (tag && tag.toLowerCase() !== "all") params.tag = tag;
 
   const headers = await getAuthHeaders();
-  const { data } = await api.get<{ notes: Note[]; totalPages: number }>(
+  const { data } = await nextServer.get<{ notes: Note[]; totalPages: number }>(
     "/notes",
     {
       params,
@@ -56,7 +64,7 @@ export async function fetchNotes(
 
 export async function deleteNote(id: string): Promise<Note> {
   const headers = await getAuthHeaders();
-  const { data } = await api.delete<Note>(`/notes/${id}`, headers);
+  const { data } = await nextServer.delete<Note>(`/notes/${id}`, headers);
   return data;
 }
 

@@ -3,7 +3,7 @@
 import { Note } from "@/types/note";
 import { User } from "@/types/user";
 import { RegisterRequest, LoginRequest } from "@/types/auth";
-import { api } from "@/app/api/api";
+import { nextServer } from "./api";
 
 export interface FetchNotesResponse {
   notes: Note[];
@@ -11,12 +11,12 @@ export interface FetchNotesResponse {
 }
 
 export async function registerClient(data: RegisterRequest): Promise<User> {
-  const { data: res } = await api.post<User>("/auth/register", data);
+  const { data: res } = await nextServer.post<User>("/auth/register", data);
   return res;
 }
 
 export async function loginClient(data: LoginRequest): Promise<User> {
-  const { data: res } = await api.post<User>("/auth/login", data);
+  const { data: res } = await nextServer.post<User>("/auth/login", data);
   return res;
 }
 
@@ -33,7 +33,7 @@ export async function fetchNotesClient(
   if (search) params.search = search;
   if (tag && tag.toLowerCase() !== "all") params.tag = tag;
 
-  const { data } = await api.get<{ notes: Note[]; totalPages: number }>(
+  const { data } = await nextServer.get<{ notes: Note[]; totalPages: number }>(
     "/notes",
     { params }
   );
@@ -41,7 +41,7 @@ export async function fetchNotesClient(
 }
 
 export async function fetchNoteById(id: string): Promise<Note> {
-  const { data } = await api.get<Note>(`/notes/${id}`);
+  const { data } = await nextServer.get<Note>(`/notes/${id}`);
   return data;
 }
 
@@ -50,12 +50,12 @@ export async function createNote(note: {
   content: string;
   tag: string;
 }): Promise<Note> {
-  const { data } = await api.post<Note>("/notes", note);
+  const { data } = await nextServer.post<Note>("/notes", note);
   return data;
 }
 
 export async function deleteNoteClient(id: string): Promise<Note> {
-  const { data } = await api.delete<Note>(`/notes/${id}`);
+  const { data } = await nextServer.delete<Note>(`/notes/${id}`);
   return data;
 }
 
