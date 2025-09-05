@@ -33,14 +33,7 @@ export default function SingUpPage() {
     <>
       <main className={css.mainContent}>
         <h1 className={css.formTitle}>Sign up</h1>
-        <form
-          className={css.form}
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            await handleSubmit(formData);
-          }}
-        >
+        <form className={css.form} action={handleSubmit}>
           <div className={css.formGroup}>
             <label htmlFor="email">Email</label>
             <input
