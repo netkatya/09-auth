@@ -2,7 +2,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { api, ApiError } from "../../api";
-// Імпортуємо parse з пакету cookie та cookies з next/headers:
 import { parse } from "cookie";
 import { cookies } from "next/headers";
 

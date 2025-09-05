@@ -33,7 +33,14 @@ export default function SingUpPage() {
     <>
       <main className={css.mainContent}>
         <h1 className={css.formTitle}>Sign up</h1>
-        <form className={css.form} action={handleSubmit}>
+        <form
+          className={css.form}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            await handleSubmit(formData);
+          }}
+        >
           <div className={css.formGroup}>
             <label htmlFor="email">Email</label>
             <input
@@ -62,7 +69,7 @@ export default function SingUpPage() {
             </button>
           </div>
 
-          {error && <p className={css.error}>Error</p>}
+          {error && <p className={css.error}>{error}</p>}
         </form>
       </main>
     </>

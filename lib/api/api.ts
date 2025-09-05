@@ -1,6 +1,6 @@
-import axios, { type AxiosResponse } from "axios";
+// import axios from "axios";
 
-const nextServer = axios.create({
-  baseURL: "http://localhost:3000/api",
-  withCredentials: true,
-});
+// const nextServer = axios.create({
+//   baseURL: "http://localhost:3000/api",
+//   withCredentials: true,
+// });

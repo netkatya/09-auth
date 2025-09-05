@@ -5,9 +5,9 @@ import css from "./TagsMenu.module.css";
 import Link from "next/link";
 import { getTagsClient } from "@/lib/api/clientApi";
 
-interface TagsMenuProps {
-  tags?: string[];
-}
+// interface TagsMenuProps {
+//   tags?: string[];
+// }
 
 export default function TagsMenu() {
   const [isOpen, setIsOpen] = useState(false);

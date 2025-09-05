@@ -62,13 +62,13 @@ export async function deleteNoteClient(id: string): Promise<Note> {
 const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
 export async function getTagsClient(): Promise<string[]> {
   try {
-    const { notes } = await fetchNotesClient(""); // берём все заметки
+    const { notes } = await fetchNotesClient("");
     const tagsFromNotes: string[] = Array.from(
       new Set(notes.map((note) => note.tag))
     );
     return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
   } catch (err) {
     console.error("Cannot fetch tags:", err);
-    return ["Todo", "Personal", "Work", "Shopping", "Meeting"];
+    return DEFAULT_TAGS;
   }
 }

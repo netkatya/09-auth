@@ -65,7 +65,7 @@ const DEFAULT_TAGS = ["Todo", "Personal", "Work", "Shopping", "Meeting"];
 export async function getTags(): Promise<string[]> {
   const { notes } = await fetchNotes("");
   const tagsFromNotes: string[] = Array.from(
-    new Set(notes.map((note: any) => note.tag as string))
+    new Set(notes.map((note) => note.tag as string))
   );
   return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
 }
