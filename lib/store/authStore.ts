@@ -1,5 +1,4 @@
 "use client";
-
 import { create } from "zustand";
 import { User } from "@/types/user";
 
@@ -13,6 +12,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  setUser: (user: User) => set({ user, isAuthenticated: true }),
+  setUser: (user) => set({ user, isAuthenticated: true }),
   clearIsAuthenticated: () => set({ user: null, isAuthenticated: false }),
 }));

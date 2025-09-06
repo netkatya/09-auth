@@ -105,15 +105,10 @@ export async function getTagsClient(): Promise<string[]> {
 }
 
 export async function getUserProfile(): Promise<User> {
-  try {
-    const { data } = await nextServer.get<User>("/users/me", {
-      withCredentials: true,
-    });
-    return data;
-  } catch (err) {
-    console.error("getUserProfile error:", err);
-    throw err;
-  }
+  const res = await fetch("/api/users/me", { credentials: "include" });
+
+  if (!res.ok) throw new Error("Unauthorized");
+  return res.json();
 }
 
 export async function updateUser(

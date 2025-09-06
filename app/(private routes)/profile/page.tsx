@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import css from "./profilePage.module.css";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { User } from "@/types/user";
 
 import { cookies } from "next/headers";
@@ -67,13 +67,13 @@ export default async function Profile() {
         </div>
 
         <div className={css.avatarWrapper}>
-          <Image
-            src="/img/avatar.jpg"
+          {/* <Image
+            src="https://via.placeholder.com/120"
             alt="User Avatar"
             width={120}
             height={120}
             className={css.avatar}
-          />
+          /> */}
         </div>
 
         <div className={css.profileInfo}>
