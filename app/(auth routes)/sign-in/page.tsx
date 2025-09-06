@@ -6,11 +6,13 @@ import { useRouter } from "next/navigation";
 import { LoginRequest } from "@/types/auth";
 import { loginClient } from "@/lib/api/clientApi";
 import { AxiosError } from "axios";
+import { useAuthStore } from "@/lib/store/authStore";
 
 type ApiError = AxiosError<{ error: string }>;
 
 export default function SignIn() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [error, setError] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
@@ -18,6 +20,7 @@ export default function SignIn() {
       const formValues = Object.fromEntries(formData) as LoginRequest;
       const res = await loginClient(formValues);
       if (res) {
+        setUser(res);
         router.push("/profile");
       } else {
         setError("Invalid email or password");

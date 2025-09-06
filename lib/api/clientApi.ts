@@ -117,7 +117,7 @@ export async function getUserProfile(): Promise<User> {
 }
 
 export async function updateUser(
-  update: Partial<{ userName: string }>
+  update: Partial<{ username: string }>
 ): Promise<User> {
   try {
     const { data } = await nextServer.patch<User>("/users/me", update, {

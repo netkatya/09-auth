@@ -83,7 +83,13 @@ export async function getTags(): Promise<string[]> {
     );
     return Array.from(new Set([...DEFAULT_TAGS, ...tagsFromNotes]));
   } catch (err) {
-    console.error("getTags error:", err);
+    console.error("getTags error:", err instanceof Error ? err.message : err);
     return DEFAULT_TAGS;
   }
+}
+
+export async function getUserProfile(): Promise<User> {
+  const headers = await getAuthHeaders();
+  const { data } = await nextServer.get<User>("/users/me", headers);
+  return data;
 }

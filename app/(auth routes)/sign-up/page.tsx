@@ -6,11 +6,13 @@ import { useState } from "react";
 import { RegisterRequest } from "@/types/auth";
 import { registerClient } from "@/lib/api/clientApi";
 import { AxiosError } from "axios";
+import { useAuthStore } from "@/lib/store/authStore";
 
 type ApiError = AxiosError<{ error: string }>;
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [error, setError] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
@@ -18,6 +20,7 @@ export default function SignUpPage() {
       const formValues = Object.fromEntries(formData) as RegisterRequest;
       const res = await registerClient(formValues);
       if (res) {
+        setUser(res);
         router.push("/profile");
       } else {
         setError("Invalid email or password");

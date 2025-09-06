@@ -1,6 +1,11 @@
 import { Metadata } from "next";
 import css from "./profilePage.module.css";
 import Link from "next/link";
+import Image from "next/image";
+import { User } from "@/types/user";
+
+import { cookies } from "next/headers";
+import { nextServer } from "@/lib/api/api";
 
 export const metadata: Metadata = {
   title: "Note Hub. Your Profile",
@@ -8,7 +13,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Note Hub. Your Profile",
     description: "Personal profile for making notes",
-    // url: "https://08-zustand-ten-ochre.vercel.app/",
     images: [
       {
         url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
@@ -20,7 +24,38 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Profile() {
+async function getUserProfileServer(): Promise<User> {
+  const cookieStore = cookies();
+  const cookieString = (await cookieStore)
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+
+  const { data } = await nextServer.get<User>("/users/me", {
+    headers: { Cookie: cookieString },
+  });
+
+  return data;
+}
+
+export default async function Profile() {
+  let user: User | null = null;
+
+  try {
+    user = await getUserProfileServer();
+  } catch (err) {
+    console.error("Failed to fetch user profile:", err);
+  }
+
+  if (!user) {
+    return (
+      <main className={css.mainContent}>
+        <p>Please log in to see your profile.</p>
+        <Link href="/sign-in">Go to Login</Link>
+      </main>
+    );
+  }
+
   return (
     <main className={css.mainContent}>
       <div className={css.profileCard}>
@@ -30,18 +65,20 @@ export default function Profile() {
             Edit Profile
           </Link>
         </div>
+
         <div className={css.avatarWrapper}>
-          <img
-            src="Avatar"
+          <Image
+            src="/img/avatar.jpg"
             alt="User Avatar"
             width={120}
             height={120}
             className={css.avatar}
           />
         </div>
+
         <div className={css.profileInfo}>
-          <p>Username: your_username</p>
-          <p>Email: your_email@example.com</p>
+          <p>Username: {user.userName || "N/A"}</p>
+          <p>Email: {user.email}</p>
         </div>
       </div>
     </main>
