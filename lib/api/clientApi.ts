@@ -48,6 +48,17 @@ export async function logoutClient(): Promise<void> {
   }
 }
 
+export async function checkSession(): Promise<void> {
+  try {
+    await nextServer.get("/auth/session");
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || "Session check failed");
+    }
+    throw new Error("Session check failed");
+  }
+}
+
 export async function getUserProfile(): Promise<User> {
   try {
     const { data: user } = await nextServer.get<User>("/users/me");

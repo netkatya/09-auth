@@ -1,11 +1,9 @@
 import { Metadata } from "next";
 import css from "./profilePage.module.css";
 import Link from "next/link";
-// import Image from "next/image";
+import Image from "next/image";
 import { User } from "@/types/user";
-
-import { cookies } from "next/headers";
-import { nextServer } from "@/lib/api/api";
+import { getUserProfile } from "@/lib/api/serverApi";
 
 export const metadata: Metadata = {
   title: "Note Hub. Your Profile",
@@ -24,25 +22,11 @@ export const metadata: Metadata = {
   },
 };
 
-async function getUserProfileServer(): Promise<User> {
-  const cookieStore = cookies();
-  const cookieString = (await cookieStore)
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join("; ");
-
-  const { data } = await nextServer.get<User>("/users/me", {
-    headers: { Cookie: cookieString },
-  });
-
-  return data;
-}
-
 export default async function Profile() {
   let user: User | null = null;
 
   try {
-    user = await getUserProfileServer();
+    user = await getUserProfile();
   } catch (err) {
     console.error("Failed to fetch user profile:", err);
   }
@@ -67,17 +51,17 @@ export default async function Profile() {
         </div>
 
         <div className={css.avatarWrapper}>
-          {/* <Image
-            src="https://via.placeholder.com/120"
+          <Image
+            src="https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"
             alt="User Avatar"
-            width={120}
-            height={120}
+            width={150}
+            height={150}
             className={css.avatar}
-          /> */}
+          />
         </div>
 
         <div className={css.profileInfo}>
-          <p>Username: {user.userName || "N/A"}</p>
+          <p>Username: {user.username || "N/A"}</p>
           <p>Email: {user.email}</p>
         </div>
       </div>

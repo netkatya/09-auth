@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
-import { getUserProfile } from "@/lib/api/clientApi";
+import { getUserProfile, checkSession } from "@/lib/api/clientApi";
 import Loader from "@/app/loading";
 
 const PUBLIC_ROUTES = ["/sign-in", "/sign-up"];
@@ -20,8 +20,9 @@ export default function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function checkAuth() {
+    async function verifyAuth() {
       try {
+        await checkSession();
         const user = await getUserProfile();
         setUser(user);
 
@@ -36,8 +37,8 @@ export default function AuthProvider({
         setLoading(false);
       }
     }
-    checkAuth();
-  }, [pathname]);
+    verifyAuth();
+  }, [clearIsAuthenticated, pathname, router, setUser]);
 
   if (loading) return <Loader />;
 

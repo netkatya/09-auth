@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// import Image from "next/image";
+import Image from "next/image";
 import css from "./EditProfilePage.module.css";
 import { getUserProfile, updateUser } from "@/lib/api/clientApi";
 import Loader from "@/app/loading";
@@ -19,7 +19,7 @@ export default function EditProfilePage() {
   useEffect(() => {
     async function fetchProfile() {
       if (user) {
-        setUsername(user.userName || "");
+        setUsername(user.username || "");
         setEmail(user.email || "");
         setLoading(false);
         return;
@@ -28,7 +28,7 @@ export default function EditProfilePage() {
       try {
         setLoading(true);
         const currentUser = await getUserProfile();
-        setUsername(currentUser.userName || "");
+        setUsername(currentUser.username || "");
         setEmail(currentUser.email || "");
         setUser(currentUser);
       } catch (err) {
@@ -65,13 +65,13 @@ export default function EditProfilePage() {
       <div className={css.profileCard}>
         <h1 className={css.formTitle}>Edit Profile</h1>
 
-        {/* <Image
-          src="https://via.placeholder.com/120"
+        <Image
+          src="https://ac.goit.global/fullstack/react/notehub-og-meta.jpg"
           alt="User Avatar"
-          width={120}
-          height={120}
+          width={150}
+          height={150}
           className={css.avatar}
-        /> */}
+        />
 
         {error && <p className={css.error}>{error}</p>}
 
