@@ -1,35 +1,41 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { nextServer } from "./lib/api/api";
+import { checkSession } from "./lib/api/serverApi";
 
 const PUBLIC_ROUTES = ["/sign-in", "/sign-up"];
 const PRIVATE_ROUTES = ["/profile", "/notes"];
 
 export async function middleware(req: NextRequest) {
   const cookieStore = await cookies();
-  let accessToken = cookieStore.get("accessToken")?.value;
+  const accessToken = cookieStore.get("accessToken")?.value;
   const refreshToken = cookieStore.get("refreshToken")?.value;
   const { pathname } = req.nextUrl;
 
   const isPublic = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
   const isPrivate = PRIVATE_ROUTES.some((route) => pathname.startsWith(route));
 
+  const sessionValid = !!accessToken;
   if (!accessToken && refreshToken) {
     try {
-      const { data, headers } = await nextServer.post("/auth/refresh", {
-        refreshToken,
-      });
+      const newTokens = await checkSession(refreshToken);
 
       const res = NextResponse.next();
-
-      if (headers["set-cookie"]) {
-        headers["set-cookie"].forEach((cookie: string) => {
-          res.headers.append("set-cookie", cookie);
+      if (newTokens.accessToken) {
+        res.cookies.set("accessToken", newTokens.accessToken, {
+          httpOnly: true,
+          secure: true,
+          path: "/",
+        });
+      }
+      if (newTokens.refreshToken) {
+        res.cookies.set("refreshToken", newTokens.refreshToken, {
+          httpOnly: true,
+          secure: true,
+          path: "/",
         });
       }
 
-      accessToken = data?.accessToken;
       return res;
     } catch {
       const res = NextResponse.redirect(new URL("/sign-in", req.url));
@@ -39,12 +45,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (!accessToken && isPrivate) {
+  if (!sessionValid && isPrivate) {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
-  if (accessToken && isPublic) {
-    return NextResponse.redirect(new URL("/profile", req.url));
+  if (sessionValid && isPublic) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();

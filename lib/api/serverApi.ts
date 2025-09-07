@@ -1,6 +1,6 @@
 import { User } from "@/types/user";
 import { Note } from "@/types/note";
-import { RegisterRequest, LoginRequest } from "@/types/auth";
+import { RegisterRequest, LoginRequest, SessionResponse } from "@/types/auth";
 import { cookies } from "next/headers";
 import { nextServer } from "./api";
 import { isAxiosError } from "axios";
@@ -95,6 +95,24 @@ export async function updateUser(
       throw new Error(error.response?.data?.message || "Update failed");
     }
     throw new Error("Update failed");
+  }
+}
+
+export async function checkSession(
+  refreshToken: string
+): Promise<SessionResponse> {
+  try {
+    const { data } = await nextServer.post<SessionResponse>("/auth/refresh", {
+      refreshToken,
+    });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "Session refresh failed"
+      );
+    }
+    throw new Error("Session refresh failed");
   }
 }
 
