@@ -55,7 +55,11 @@ export default function EditProfilePage() {
   };
 
   const handleCancel = () => {
-    router.push("/profile");
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/profile");
+    }
   };
 
   if (loading) return <Loader />;
